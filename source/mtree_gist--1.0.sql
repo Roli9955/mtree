@@ -683,7 +683,7 @@ DEFAULT FOR TYPE mtree_float USING gist AS
 	FUNCTION	8	mtree_float_distance	(internal, mtree_float, smallint, oid, internal);
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
--- _mtree_float
+-- _mtree_float_array
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 CREATE TYPE mtree_float_array;
@@ -765,6 +765,11 @@ RETURNS float4
 AS 'MODULE_PATHNAME'
 LANGUAGE C STRICT IMMUTABLE;
 
+CREATE OR REPLACE FUNCTION mtree_float_array_radius(mtree_float_array)
+RETURNS float4
+AS 'MODULE_PATHNAME'
+LANGUAGE C STRICT IMMUTABLE;
+
 CREATE OPERATOR = (
 	LEFTARG		= mtree_float_array,
 	RIGHTARG	= mtree_float_array,
@@ -814,4 +819,142 @@ DEFAULT FOR TYPE mtree_float_array USING gist AS
 	FUNCTION	5	mtree_float_array_penalty		(internal, internal, internal),
 	FUNCTION	6	mtree_float_array_picksplit		(internal, internal),
 	FUNCTION	7	mtree_float_array_same			(mtree_float_array, mtree_float_array),
-	FUNCTION	8	mtree_float_array_distance		(internal, mtree_float_array, smallint, oid, internal);
+	FUNCTION	8	mtree_float_array_distance		(internal, mtree_float_array, smallint, oid, internal),
+	FUNCTION	9	mtree_float_array_radius		(mtree_float_array),
+	FUNCTION	10	mtree_options					(internal);
+
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+-- mtree_int128
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+CREATE TYPE mtree_int128;
+
+CREATE OR REPLACE FUNCTION mtree_int128_input(cstring)
+RETURNS mtree_int128
+AS 'MODULE_PATHNAME'
+LANGUAGE C STRICT IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION mtree_int128_output(mtree_int128)
+RETURNS cstring
+AS 'MODULE_PATHNAME'
+LANGUAGE C STRICT IMMUTABLE;
+
+CREATE TYPE mtree_int128 (
+	INPUT	= mtree_int128_input,
+	OUTPUT	= mtree_int128_output,
+	INTERNALLENGTH = VARIABLE,
+	STORAGE	= extended
+);
+
+CREATE OR REPLACE FUNCTION mtree_int128_consistent(internal, mtree_int128, smallint, oid, internal)
+RETURNS bool
+AS 'MODULE_PATHNAME'
+LANGUAGE C STRICT IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION mtree_int128_union(internal, internal)
+RETURNS mtree_int128
+AS 'MODULE_PATHNAME'
+LANGUAGE C STRICT IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION mtree_int128_same(mtree_int128, mtree_int128)
+RETURNS bool
+AS 'MODULE_PATHNAME'
+LANGUAGE C STRICT IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION mtree_int128_penalty(internal, internal, internal)
+RETURNS internal
+AS 'MODULE_PATHNAME'
+LANGUAGE C STRICT IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION mtree_int128_picksplit(internal, internal)
+RETURNS internal
+AS 'MODULE_PATHNAME'
+LANGUAGE C STRICT IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION mtree_int128_compress(internal)
+RETURNS internal
+AS 'MODULE_PATHNAME'
+LANGUAGE C STRICT IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION mtree_int128_decompress(internal)
+RETURNS internal
+AS 'MODULE_PATHNAME'
+LANGUAGE C STRICT IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION mtree_int128_distance(internal, mtree_int128, smallint, oid, internal)
+RETURNS float4
+AS 'MODULE_PATHNAME'
+LANGUAGE C STRICT IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION mtree_int128_overlap_operator(mtree_int128, mtree_int128)
+RETURNS bool
+AS 'MODULE_PATHNAME'
+LANGUAGE C STRICT IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION mtree_int128_contains_operator(mtree_int128, mtree_int128)
+RETURNS bool
+AS 'MODULE_PATHNAME'
+LANGUAGE C STRICT IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION mtree_int128_contained_operator(mtree_int128, mtree_int128)
+RETURNS bool
+AS 'MODULE_PATHNAME'
+LANGUAGE C STRICT IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION mtree_int128_distance_operator(mtree_int128, mtree_int128)
+RETURNS float4
+AS 'MODULE_PATHNAME'
+LANGUAGE C STRICT IMMUTABLE;
+
+CREATE OPERATOR = (
+	LEFTARG		= mtree_int128,
+	RIGHTARG	= mtree_int128,
+	FUNCTION	= mtree_int128_same,
+	COMMUTATOR	= =
+);
+
+CREATE OPERATOR #&# (
+	LEFTARG		= mtree_int128,
+	RIGHTARG	= mtree_int128,
+	FUNCTION	= mtree_int128_overlap_operator,
+	COMMUTATOR	= #&#
+);
+
+CREATE OPERATOR #># (
+	LEFTARG		= mtree_int128,
+	RIGHTARG	= mtree_int128,
+	FUNCTION	= mtree_int128_contains_operator,
+	COMMUTATOR	= #<#
+);
+
+CREATE OPERATOR #<# (
+	LEFTARG		= mtree_int128,
+	RIGHTARG	= mtree_int128,
+	FUNCTION	= mtree_int128_contained_operator,
+	COMMUTATOR	= #>#
+);
+
+CREATE OPERATOR <-> (
+	LEFTARG		= mtree_int128,
+	RIGHTARG	= mtree_int128,
+	FUNCTION	= mtree_int128_distance_operator,
+	COMMUTATOR	= <->
+);
+
+CREATE OPERATOR CLASS gist_mtree_int128_ops
+DEFAULT FOR TYPE mtree_int128 USING gist AS
+	OPERATOR	1	=	,
+	OPERATOR	2	#&#	,
+	OPERATOR	3	#>#	,
+	OPERATOR	4	#<#	,
+	OPERATOR	15	<->								(mtree_int128, mtree_int128) FOR ORDER BY float_ops,
+	FUNCTION	1	mtree_int128_consistent			(internal, mtree_int128, smallint, oid, internal),
+	FUNCTION	2	mtree_int128_union				(internal, internal),
+	FUNCTION	3	mtree_int128_compress			(internal),
+	FUNCTION	4	mtree_int128_decompress			(internal),
+	FUNCTION	5	mtree_int128_penalty			(internal, internal, internal),
+	FUNCTION	6	mtree_int128_picksplit			(internal, internal),
+	FUNCTION	7	mtree_int128_same				(mtree_int128, mtree_int128),
+	FUNCTION	8	mtree_int128_distance			(internal, mtree_int128, smallint, oid, internal),
+	FUNCTION	10	mtree_options					(internal);

@@ -25,6 +25,7 @@ PG_FUNCTION_INFO_V1(mtree_int8_array_compress);
 PG_FUNCTION_INFO_V1(mtree_int8_array_decompress);
 
 PG_FUNCTION_INFO_V1(mtree_int8_array_distance);
+PG_FUNCTION_INFO_V1(mtree_int8_array_radius);
 
 PG_FUNCTION_INFO_V1(mtree_int8_array_contains_operator);
 PG_FUNCTION_INFO_V1(mtree_int8_array_contained_operator);
@@ -482,18 +483,24 @@ Datum mtree_int8_array_distance(PG_FUNCTION_ARGS) {
 	bool isLeaf = GistPageIsLeaf(entry->page);
 	bool* recheck = (bool*)PG_GETARG_POINTER(4);
 
-	if (isLeaf) {
-		*recheck = true;
-	}
+	// if (isLeaf) {
+	// 	*recheck = true;
+	// }
 
-	PG_RETURN_FLOAT4((float4)mtree_int8_array_distance_internal(query, key));
+	PG_RETURN_INT64(mtree_int8_array_distance_internal(query, key));
+}
+
+Datum mtree_int8_array_radius(PG_FUNCTION_ARGS) {
+	mtree_int8_array* first = PG_GETARG_MTREE_INT8_ARRAY_P(0);
+
+	PG_RETURN_INT64(first->coveringRadius);
 }
 
 Datum mtree_int8_array_distance_operator(PG_FUNCTION_ARGS) {
 	mtree_int8_array* first = PG_GETARG_MTREE_INT8_ARRAY_P(0);
 	mtree_int8_array* second = PG_GETARG_MTREE_INT8_ARRAY_P(1);
 
-	PG_RETURN_FLOAT4((float4)mtree_int8_array_distance_internal(first, second));
+	PG_RETURN_INT64(mtree_int8_array_distance_internal(first, second));
 }
 
 Datum mtree_int8_array_overlap_operator(PG_FUNCTION_ARGS) {

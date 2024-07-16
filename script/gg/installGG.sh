@@ -3,13 +3,14 @@
 set -e
 
 # Source code directory of the M-tree index
-readonly SOURCE_DIRECTORY="/home/ggombos/mtree/mtree_gist/source"
+readonly SOURCE_DIRECTORY="/home/data/mtree_gist/source"
 # Include directory
-readonly POSTGRESQL_INCLUDE_DIRECTORY="/home/ggombos/mtree/mtree_gist/postgre/include/postgresql/server"
+# readonly POSTGRESQL_INCLUDE_DIRECTORY="/home/data/mtree_gist/postgre/include/postgresql/server"
+readonly POSTGRESQL_INCLUDE_DIRECTORY="/usr/include/postgresql/15/server"
 # PostgreSQL home of SQL and control files
-readonly POSTGRESQL_EXTENSION_DIRECTORY="/home/ggombos/mtree/mtree_gist/postgre/share/postgresql/extension"
+readonly POSTGRESQL_EXTENSION_DIRECTORY="/usr/share/postgresql/15/extension"
 # PostgreSQL home of shared object libraries
-readonly POSTGRESQL_LIBRARY_DIRECTORY="/home/ggombos/mtree/mtree_gist/postgre"
+readonly POSTGRESQL_LIBRARY_DIRECTORY="/usr/share/postgresql/15/postgre"
 
 readonly FILENAMES=(
   "mtree_text"
@@ -24,6 +25,8 @@ readonly FILENAMES=(
   "mtree_float_util"
   "mtree_float_array"
   "mtree_float_array_util"
+  "mtree_int128"
+  "mtree_int128_util"
   "mtree_util"
   "mtree_gist"
 )

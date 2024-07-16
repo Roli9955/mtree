@@ -40,7 +40,9 @@ typedef enum
 	/*  */
 	SamplingMinOverlapArea,
 	/*  */
-	SamplingMinAreaSum
+	SamplingMinAreaSum,
+	/* */
+	GuttmanPolyTime
 }
 MtreePickSplitStrategy;
 
@@ -83,6 +85,7 @@ static relopt_enum_elt_def mtreePickSplitStrategyValues[] =
 	{"SamplingMinCoveringMax",	SamplingMinCoveringMax},
 	{"SamplingMinOverlapArea",	SamplingMinOverlapArea},
 	{"SamplingMinAreaSum",		SamplingMinAreaSum},
+	{"GuttmanPolyTime", 		GuttmanPolyTime},
 	{(const char*) NULL}
 };
 

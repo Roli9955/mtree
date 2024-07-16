@@ -30,6 +30,8 @@ readonly FILENAMES=(
   "mtree_float_array_util"
   "mtree_util"
   "mtree_gist"
+  "mtree_int128"
+  "mtree_int128_util"
 )
 
 function compile_file() {

@@ -1,0 +1,1 @@
+bash script/gg/installGG.sh
